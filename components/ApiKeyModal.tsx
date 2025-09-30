@@ -9,6 +9,9 @@ interface ApiKeyModalProps {
 
 const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, currentApiKey, onClose, onSave }) => {
     const [key, setKey] = useState('');
+    const [copyText, setCopyText] = useState('複製');
+
+    const DEMO_KEY = 'AIzaSyAOboK8H8vFNg04BnVeZDQ-t9wHnQ8l_-g';
 
     useEffect(() => {
         if (currentApiKey) {
@@ -16,11 +19,19 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, currentApiKey, onClos
         } else {
             setKey('');
         }
+        setCopyText('複製');
     }, [currentApiKey, isOpen]);
 
     const handleSave = () => {
         onSave(key);
         onClose();
+    };
+
+    const handleCopyDemoKey = () => {
+        navigator.clipboard.writeText(DEMO_KEY);
+        setKey(DEMO_KEY);
+        setCopyText('已複製!');
+        setTimeout(() => setCopyText('複製'), 2000);
     };
 
     if (!isOpen) {
@@ -56,9 +67,24 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, currentApiKey, onClos
                     value={key}
                     onChange={(e) => setKey(e.target.value)}
                     placeholder="在此貼上您的 API 金鑰"
-                    className="w-full bg-slate-700 border border-slate-600 rounded-md p-2 text-sm text-slate-200 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition mb-6"
+                    className="w-full bg-slate-700 border border-slate-600 rounded-md p-2 text-sm text-slate-200 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition mb-4"
                     aria-label="Gemini API Key Input"
                 />
+                <div className="bg-slate-700/50 border border-slate-600 rounded-md p-3 mb-6 text-sm">
+                    <p className="font-semibold text-slate-300 mb-2">DEMO 金鑰 (僅供展示)</p>
+                    <div className="flex items-center gap-2 bg-slate-900 p-2 rounded-md">
+                        <code className="text-xs text-slate-800 select-all flex-grow truncate">{DEMO_KEY}</code>
+                        <button 
+                            onClick={handleCopyDemoKey}
+                            className="text-xs py-1 px-2 bg-slate-600 hover:bg-slate-500 rounded-md text-slate-200 transition-colors flex-shrink-0"
+                        >
+                            {copyText}
+                        </button>
+                    </div>
+                    <p className="text-xs text-amber-400 mt-2">
+                        注意：此金鑰僅供本應用程式展示之用，請勿用於其他用途。
+                    </p>
+                </div>
                 <div className="flex justify-end gap-3">
                     <button
                         onClick={onClose}
