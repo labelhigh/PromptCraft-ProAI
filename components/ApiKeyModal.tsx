@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
+import { DEMO_API_KEY } from '../constants';
 
 interface ApiKeyModalProps {
     isOpen: boolean;
@@ -9,9 +11,7 @@ interface ApiKeyModalProps {
 
 const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, currentApiKey, onClose, onSave }) => {
     const [key, setKey] = useState('');
-    const [copyText, setCopyText] = useState('複製');
-
-    const DEMO_KEY = 'AIzaSyAOboK8H8vFNg04BnVeZDQ-t9wHnQ8l_-g';
+    const [copyText, setCopyText] = useState('複製並使用');
 
     useEffect(() => {
         if (currentApiKey) {
@@ -19,7 +19,7 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, currentApiKey, onClos
         } else {
             setKey('');
         }
-        setCopyText('複製');
+        setCopyText('複製並使用');
     }, [currentApiKey, isOpen]);
 
     const handleSave = () => {
@@ -28,10 +28,12 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, currentApiKey, onClos
     };
 
     const handleCopyDemoKey = () => {
-        navigator.clipboard.writeText(DEMO_KEY);
-        setKey(DEMO_KEY);
-        setCopyText('已複製!');
-        setTimeout(() => setCopyText('複製'), 2000);
+        navigator.clipboard.writeText(DEMO_API_KEY);
+        setCopyText('已儲存!');
+        onSave(DEMO_API_KEY);
+        setTimeout(() => {
+            onClose();
+        }, 500);
     };
 
     if (!isOpen) {
@@ -73,7 +75,7 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, currentApiKey, onClos
                 <div className="bg-slate-700/50 border border-slate-600 rounded-md p-3 mb-6 text-sm">
                     <p className="font-semibold text-slate-300 mb-2">DEMO 金鑰 (僅供展示)</p>
                     <div className="flex items-center gap-2 bg-slate-900 p-2 rounded-md">
-                        <code className="text-xs text-slate-800 select-all flex-grow truncate">{DEMO_KEY}</code>
+                        <code className="text-xs text-slate-400 select-all flex-grow truncate">{DEMO_API_KEY}</code>
                         <button 
                             onClick={handleCopyDemoKey}
                             className="text-xs py-1 px-2 bg-slate-600 hover:bg-slate-500 rounded-md text-slate-200 transition-colors flex-shrink-0"

@@ -1,6 +1,8 @@
 
 import { Strategy, StrategyDefinition } from './types';
 
+export const DEMO_API_KEY = 'AIzaSyAOboK8H8vFNg04BnVeZDQ-t9wHnQ8l_-g';
+
 export const STRATEGIES: StrategyDefinition[] = [
   {
     id: Strategy.ZeroShot,

@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Strategy, StrategyInputs, FewShotExample, AssistantMessage, MessageSender, AIAssistableField, RolePromptingInputs, SystemPromptingInputs } from './types';
-import { STRATEGIES } from './constants';
+import { STRATEGIES, DEMO_API_KEY } from './constants';
 import Header from './components/Header';
 import StrategyPanel from './components/StrategyPanel';
 import MainEditor from './components/MainEditor';
@@ -36,8 +37,14 @@ const App: React.FC = () => {
             setApiKey(storedApiKey);
             setAssistantMessages([{ id: '1', sender: MessageSender.AI, text: '您好！我是您的 AI 助理。今天我該如何協助您打造完美的提示詞呢？' }]);
         } else {
-            setAssistantMessages([initialAssistantMessage]);
-            setIsApiKeyModalOpen(true);
+            // No key found, automatically set up the demo key for a seamless first-time experience.
+            setApiKey(DEMO_API_KEY);
+            localStorage.setItem('gemini_api_key', DEMO_API_KEY);
+            setAssistantMessages([{ 
+                id: '1', 
+                sender: MessageSender.AI, 
+                text: '您好！為了讓您快速開始，系統已自動為您載入 DEMO 金鑰。\n\n您可以立即開始使用 AI 助理，或點擊右上角的「API 金鑰」按鈕來更換成您自己的金鑰。' 
+            }]);
         }
     }, []);
 
@@ -182,7 +189,7 @@ const App: React.FC = () => {
     return (
         <>
             <div className="min-h-screen bg-slate-900 text-slate-200 flex flex-col">
-                <Header onClearAll={handleClearAll} onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)} />
+                <Header onClearAll={handleClearAll} />
                 <main className="flex-grow p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-screen-2xl w-full mx-auto">
                     <div className="flex flex-col gap-6">
                         <StrategyPanel
